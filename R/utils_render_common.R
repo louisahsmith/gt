@@ -358,17 +358,10 @@ create_group_rows <- function(n_rows,
 
     if (context == "latex") {
 
-      if (nchar(groups_rows_df[
-        which(groups_rows_df$row %in% x), "group_label"][[1]]) > 0) {
-
-      return(c(latex_group_row(
+      latex_group_row(
         group_name = groups_rows_df[
           which(groups_rows_df$row %in% x), "group_label"][[1]],
-        top_border = x != 1, bottom_border = x != n_rows),
-        ""))
-      }
-      ""
-
+        top_border = x != 1, bottom_border = x != n_rows)
     }
   }) %>%
     unlist() %>%

@@ -198,6 +198,10 @@ create_body_component_l <- function(data) {
   # Get the column headings for the visible (e.g., `default`) columns
   default_vars <- dt_boxhead_get_vars_default(data = data)
 
+  if ("rowname" %in% names(body)) {
+    default_vars <- c("rowname", default_vars)
+  }
+
   # Determine whether the stub is available through analysis
   # of the `stub_components`
   stub_available <- dt_stub_components_has_rowname(stub_components)
@@ -233,13 +237,13 @@ create_body_component_l <- function(data) {
       dt_stub_df_get(data = data) %>%
       dplyr::select(rowname) %>%
       dplyr::rename(`::rowname` = rowname) %>%
-      cbind(body) %>%
-      dplyr::select(one_of(default_vars))
+      cbind(body)
   }
 
+
   # Split `body_content` by slices of rows and create data rows
-  body_content <- as.vector(t(body))
-  row_splits <- split(body_content, ceiling(seq_along(body_content) / n_cols ))
+  body_content <- as.vector(t(body[, default_vars]))
+  row_splits <- split(body_content, ceiling(seq_along(body_content) / n_cols))
   data_rows <- create_data_rows(n_rows, row_splits, context = "latex")
 
   summary_rows <-
