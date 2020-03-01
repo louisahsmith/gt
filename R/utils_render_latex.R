@@ -116,13 +116,13 @@ create_columns_component_l <- function(data) {
     # Get vector of group labels (spanners)
     spanners <- dt_spanners_print(data = data, include_hidden = FALSE)
 
-    # Promote column labels to the group level wherever the
-    # spanner label is NA
-    spanners[is.na(spanners)] <- headings_vars[is.na(spanners)]
-
     if (stub_available) {
       spanners <- c(NA_character_, spanners)
     }
+
+    # Promote column labels to the group level wherever the
+    # spanner label is NA
+    spanners[is.na(spanners)] <- headings_vars[is.na(spanners)]
 
     spanners_lengths <- rle(spanners)
 
@@ -156,7 +156,7 @@ create_columns_component_l <- function(data) {
               "}"))
 
       } else {
-        multicol <- c(multicol, "& ")
+        multicol <- multicol # don't add an extra &
       }
 
     }
