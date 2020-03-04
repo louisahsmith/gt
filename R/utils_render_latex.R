@@ -70,8 +70,8 @@ create_table_start_l <- function(data) {
 
   } else {
     col_alignment <- get_alignment %>%
-    dplyr::pull(column_align) %>%
     dplyr::filter(type == "default") %>%
+    dplyr::pull(column_align) %>%
     substr(1, 1)
     if (dt_stub_df_exists(data = data)) {
       col_alignment <- c("l", col_alignment)
