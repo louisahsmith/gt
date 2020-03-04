@@ -67,6 +67,7 @@ create_table_start_l <- function(data) {
     col_alignment <- get_alignment %>%
       dplyr::filter(type != "stub") %>% #for now, must just assign all cols
       dplyr::pull(latex_column_align)
+
   } else {
     col_alignment <- get_alignment %>%
     dplyr::pull(column_align) %>%
