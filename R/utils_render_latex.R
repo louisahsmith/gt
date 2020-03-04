@@ -51,24 +51,31 @@ latex_group_row <- function(group_name,
 #' @noRd
 create_table_start_l <- function(data) {
 
-  col_alignment <-
-    dt_boxhead_get(data = data) %>%
-    dplyr::filter(type == "default")
+  get_alignment <-
+    dt_boxhead_get(data = data)
 
-  if (!is.null(col_alignment$latex_column_align)) {
-    col_alignment <- col_alignment %>%
+  if (!is.null(get_alignment$latex_column_align)) {
+    row_na <- get_alignment %>%
+      dplyr::filter(type == "row_group") %>%
+      dplyr::pull(latex_column_align)
+
+    if (any(is.na(row_na))) {
+      get_alignment <- get_alignment %>%
+        dplyr::mutate(latex_column_align = ifelse(type == "row_group", "l", latex_column_align))
+    }
+
+    col_alignment <- get_alignment %>%
+      dplyr::filter(type != "stub") %>% #for now, must just assign all cols
       dplyr::pull(latex_column_align)
   } else {
-    col_alignment <- col_alignment %>%
+    col_alignment <- get_alignment %>%
     dplyr::pull(column_align) %>%
+    dplyr::filter(type == "default") %>%
     substr(1, 1)
+    if (dt_stub_df_exists(data = data)) {
+      col_alignment <- c("l", col_alignment)
+    }
   }
-
-  # TODO: ensure that number of alignment tabs is correct
-  if (dt_stub_df_exists(data = data)) {
-    col_alignment <- c("left", col_alignment)
-  }
-
   paste0(
     "\\captionsetup[table]{labelformat=empty,skip=1pt}\n",
     "\\begin{longtable}{",
