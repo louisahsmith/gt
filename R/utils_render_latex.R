@@ -53,8 +53,16 @@ create_table_start_l <- function(data) {
 
   col_alignment <-
     dt_boxhead_get(data = data) %>%
-    dplyr::filter(type == "default") %>%
-    dplyr::pull(column_align)
+    dplyr::filter(type == "default")
+
+  if (!is.null(col_alignment$latex_column_align)) {
+    col_alignment <- col_alignment %>%
+      dplyr::pull(latex_column_align)
+  } else {
+    col_alignment <- col_alignment %>%
+    dplyr::pull(column_align) %>%
+    substr(1, 1)
+  }
 
   # TODO: ensure that number of alignment tabs is correct
   if (dt_stub_df_exists(data = data)) {
@@ -64,7 +72,7 @@ create_table_start_l <- function(data) {
   paste0(
     "\\captionsetup[table]{labelformat=empty,skip=1pt}\n",
     "\\begin{longtable}{",
-    col_alignment %>% substr(1, 1) %>% paste(collapse = ""),
+    col_alignment %>% paste(collapse = ""),
     "}\n",
     collapse = ""
   )
